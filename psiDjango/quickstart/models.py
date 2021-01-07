@@ -4,11 +4,11 @@ from django.db import models
 
 # TODO
 
-# Video
+#Video
 # title
 # description
 # path
-# date tiem
+# date time
 # user ( posted by user )
 
 #Comment

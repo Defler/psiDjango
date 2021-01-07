@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from psiDjango.quickstart import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('index', views.Index.as_view()),
 ]
