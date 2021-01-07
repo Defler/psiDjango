@@ -19,5 +19,5 @@ from psiDjango.quickstart import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('index', views.Index.as_view()),
+    path('', views.Index.as_view()), #path('index', views.Index.as_view())
 ]
