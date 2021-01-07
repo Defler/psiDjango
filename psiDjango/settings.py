@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "psibaza",
         'USER': "root",
-        'PASSWORD': "pwdpwd",
+        'PASSWORD': "",
         'HOST': "localhost",
         'PORT': "3306",
     }
