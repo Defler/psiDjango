@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.base import View, HttpResponse
 
-
 # Create your views here.
 
 # TODO
@@ -18,3 +17,6 @@ class NewVideo(View):
     def get(self, request):
         variableA = 'New Video'
         return render(request, self.template_name, {'variable': variableA})
+
+
+

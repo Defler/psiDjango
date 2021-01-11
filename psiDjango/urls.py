@@ -16,10 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 #from psiDjango.quickstart import views
+from psiDjango.quickstart import views
 from psiDjango.quickstart.views import Index, NewVideo
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Index.as_view()), #path('index', views.Index.as_view())
-    path('new_video', NewVideo.as_view())
+    path('new_video', NewVideo.as_view()),
 ]
