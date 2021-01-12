@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 
 # Create your models here.
@@ -18,4 +19,3 @@ class Comment(models.Model):
     datetime = models.DateTimeField(blank=False, null=False)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
-
