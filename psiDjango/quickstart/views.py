@@ -3,6 +3,8 @@ from django.views.generic.base import View, HttpResponse
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
+from rest_framework import generics
 
 from .serializers import CommentSerializer, VideoSerializer
 from .models import Comment, Video
@@ -29,7 +31,20 @@ class NewVideo(View):
         return render(request, self.template_name, {'variable': variableA})
 
 
+class IndexApiView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def get(self, request, *args, **kwargs):
+        data = {
+            'test Index'
+            'data'
+        }
+        return Response(data)
+
+
 class CommentApiView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     def get(self, request, *args, **kwargs):
         queryset = Comment.objects.all()
         # comment = queryset.first()
@@ -46,16 +61,21 @@ class CommentApiView(APIView):
             return Response(serializer.errors)
 
 
-class IndexApiView(APIView):
-    def get(self, request, *args, **kwargs):
-        data = {
-            'test Index'
-            'data'
-        }
-        return Response(data)
+class CommentListApiView(generics.ListCreateAPIView):
+    permission_classes = (IsAdminUser,)
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+
+class CommentUpdateApiView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAdminUser,)
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
 
 
 class VideoApiView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     def get(self, request, *args, **kwargs):
         queryset = Video.objects.all()
         # comment = queryset.first()
@@ -70,3 +90,15 @@ class VideoApiView(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
+
+
+class VideoListApiView(generics.ListCreateAPIView):
+    permission_classes = (IsAdminUser,)
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer
+
+
+class VideoUpdateApiView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAdminUser,)
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer

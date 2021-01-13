@@ -7,14 +7,16 @@ from .models import Comment, Video
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = [
-            'comValue', 'datetime', 'user', 'video'
+        fields = '__all__'
+        read_only_fields = [
+            'id'
         ]
 
 
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = [
-            'title', 'description', 'path', 'datetime', 'user'
+        fields = '__all__'
+        read_only_fields = [
+            'id', 'path'
         ]
