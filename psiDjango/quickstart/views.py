@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.base import View, HttpResponse
+from django_filters import AllValuesFilter, DateTimeFilter, NumberFilter, FilterSet
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -49,6 +50,9 @@ class CommentListApiView(generics.ListCreateAPIView):
     permission_classes = (IsAdminUser,)
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    filterset_fields = ['user']
+    search_fields = ['video']
+    ordering_fields = ['datetime']
 
 
 class CommentUpdateApiView(generics.RetrieveUpdateDestroyAPIView):
@@ -76,10 +80,25 @@ class VideoApiView(APIView):
             return Response(serializer.errors)
 
 
+class VideoFilter(FilterSet):
+    min_id = NumberFilter(field_name='id', lookup_expr='gte')
+    max_id = NumberFilter(field_name='id', lookup_expr='lte')
+    title = AllValuesFilter(field_name='title')
+
+    class Meta:
+        model = Video
+        fields = ['min_id', 'max_id', 'title']
+
+
 class VideoListApiView(generics.ListCreateAPIView):
     permission_classes = (IsAdminUser,)
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+    filter_class = VideoFilter
+    name = 'VideosList'
+
+
+
 
 
 class VideoUpdateApiView(generics.RetrieveUpdateDestroyAPIView):
