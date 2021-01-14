@@ -17,18 +17,18 @@ from django.contrib import admin
 from django.urls import path, include
 # from psiDjango.quickstart import views
 from psiDjango.quickstart import views
-from psiDjango.quickstart.views import Index, NewVideo, CommentApiView, CommentListApiView, CommentUpdateApiView, IndexApiView, VideoApiView, VideoListApiView, VideoUpdateApiView
+from psiDjango.quickstart.views import Index, CommentApiView, CommentVideosView, CommentListApiView, CommentUpdateApiView, VideoApiView, VideoUsersView, VideoListApiView, VideoUpdateApiView
 
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
-    path('home', Index.as_view()),  # path('index', views.Index.as_view())
-    path('new_video', NewVideo.as_view()),
-    path('', IndexApiView.as_view(), name='testIndexApiView'),
+    path('', Index.as_view(), name='IndexApiView'),
     path('comments', CommentApiView.as_view(), name='CommentApiView'),
-    path('commentsApi', CommentListApiView.as_view(), name='CommentListApiView'),
-    path('commentsApi/<int:pk>', CommentUpdateApiView.as_view(), name='CommentUpdateApiView'),
+    path('commentsVideos', CommentVideosView.as_view(), name='CommentVideosApiView'),
+    path('commentsList', CommentListApiView.as_view(), name='CommentListApiView'),
+    path('comments/<int:pk>', CommentUpdateApiView.as_view(), name='CommentUpdateApiView'),
     path('videos', VideoApiView.as_view(), name='VideoApiView'),
-    path('videosApi', VideoListApiView.as_view(), name='VideoListApiView'),
-    path('videosApi/<int:pk>', VideoUpdateApiView.as_view(), name='VideoUpdateApiView'),
+    path('videosUsers', VideoUsersView.as_view(), name='VideoUsersApiView'),
+    path('videosList', VideoListApiView.as_view(), name='VideoListApiView'),
+    path('videos/<int:pk>', VideoUpdateApiView.as_view(), name='VideoUpdateApiView'),
 ]
