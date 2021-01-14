@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework import generics
+from rest_framework.reverse import reverse
 
 from .serializers import CommentSerializer, VideoSerializer, VideoUsersSerializer, CommentVideosSerializer
 from .models import Comment, Video
@@ -16,15 +17,13 @@ from .models import Comment, Video
 # TODO
 
 
-class Index(APIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-
+class Index(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
-        data = {
-            'test Index'
-            'data'
-        }
-        return Response(data)
+        return Response({'videos': reverse(viewname='VideoListApiView', request=request),
+                         'comments': reverse(viewname='CommentListApiView', request=request),
+                        # 'users': reverse(UserList.name, request=request)
+                        # 'video-categories': reverse(UserList.name, request=request)
+                         })
 
 
 class CommentApiView(APIView):
@@ -47,12 +46,15 @@ class CommentApiView(APIView):
 
 
 class CommentListApiView(generics.ListCreateAPIView):
-    permission_classes = (IsAdminUser,)
+    permission_classes = (IsAuthenticated,)
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     filterset_fields = ['user']
-    search_fields = ['video']
+    search_fields = ['comValue']
     ordering_fields = ['datetime']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class CommentUpdateApiView(generics.RetrieveUpdateDestroyAPIView):
@@ -91,14 +93,15 @@ class VideoFilter(FilterSet):
 
 
 class VideoListApiView(generics.ListCreateAPIView):
-    permission_classes = (IsAdminUser,)
+    permission_classes = (IsAuthenticated,)
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
     filter_class = VideoFilter
     name = 'VideosList'
+    search_fields = ['title']
 
-
-
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class VideoUpdateApiView(generics.RetrieveUpdateDestroyAPIView):

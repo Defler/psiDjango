@@ -1,7 +1,5 @@
 from django.contrib.auth import get_user_model as user_model
-
 from rest_framework import serializers
-
 from .models import Comment, Video
 
 # TODO
@@ -14,7 +12,7 @@ class VideoSerializer(serializers.ModelSerializer):
         model = Video
         fields = '__all__'
         read_only_fields = [
-            'id', 'path'
+            'id', 'path', 'user'
         ]
 
 
@@ -34,7 +32,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = '__all__'
         read_only_fields = [
-            'id'
+            'id', 'user'
         ]
 
 
