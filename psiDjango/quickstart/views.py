@@ -7,22 +7,36 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework import generics
 from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
-from .serializers import CommentSerializer, VideoSerializer, UserSerializer
-from .models import Comment, Video
+from .serializers import CommentSerializer, VideoSerializer, UserSerializer, VideoCategorySerializer
+from .models import Comment, Video, VideoCategory
 
 
 # Create your views here.
 
 # TODO
 
-
 class Index(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         return Response({'videos': reverse(VideoList.name, request=request),
                          'comments': reverse(CommentList.name, request=request),
-                         'users': reverse(UserList.name, request=request)
-                        # 'video-categories': reverse(UserList.name, request=request)
+                         'users': reverse(UserList.name, request=request),
+                         'video-categories': reverse(VideoCategoryList.name, request=request)
                          })
+
+
+class VideoCategoryList(generics.ListCreateAPIView):
+    queryset = VideoCategory.objects.all()
+    serializer_class = VideoCategorySerializer
+    name = 'videocategory-list'
+    filterset_fields = ['name']
+    search_fields = ['name']
+    ordering_fields = ['name']
+
+
+class VideoCategoryDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = VideoCategory.objects.all()
+    serializer_class = VideoCategorySerializer
+    name = 'videocategory-detail'
 
 
 class CommentList(generics.ListCreateAPIView):

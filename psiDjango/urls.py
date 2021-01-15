@@ -18,7 +18,7 @@ from django.urls import path, include
 # from psiDjango.quickstart import views
 from psiDjango.quickstart import views
 from psiDjango.quickstart.views import Index, CommentList, CommentDetail, \
-    VideoList, VideoDetail, UserList, UserDetail
+    VideoList, VideoDetail, VideoCategoryList, VideoCategoryDetail, UserList, UserDetail
 
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
@@ -32,5 +32,8 @@ urlpatterns = [
     path('videos/<int:pk>', VideoDetail.as_view(), name=views.VideoDetail.name),
 
     path('users', UserList.as_view(), name=views.UserList.name),
-    path('users/<int:pk>', UserDetail.as_view(), name=views.UserDetail.name)
+    path('users/<int:pk>', UserDetail.as_view(), name=views.UserDetail.name),
+
+    path('video-categories', VideoCategoryList.as_view(), name=views.VideoCategoryList.name),
+    path('video-categories/<int:pk>', VideoCategoryDetail.as_view(), name=views.VideoCategoryDetail.name)
 ]
