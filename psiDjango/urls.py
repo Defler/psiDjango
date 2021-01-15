@@ -17,12 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 # from psiDjango.quickstart import views
 from psiDjango.quickstart import views
-from psiDjango.quickstart.views import Index, CommentApiView, CommentVideosView, CommentListApiView, CommentUpdateApiView, VideoApiView, VideoUsersView, VideoListApiView, VideoUpdateApiView
+from psiDjango.quickstart.views import Index, UserApiView, CommentApiView, CommentVideosView, CommentListApiView, CommentUpdateApiView, VideoApiView, VideoUsersView, VideoListApiView, VideoUpdateApiView
 
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
     path('', Index.as_view(), name='IndexApiView'),
+    path('users', UserApiView.as_view(), name='UserApiView'),
     path('comments', CommentApiView.as_view(), name='CommentApiView'),
     path('commentsVideos', CommentVideosView.as_view(), name='CommentVideosApiView'),
     path('commentsList', CommentListApiView.as_view(), name='CommentListApiView'),

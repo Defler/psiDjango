@@ -7,6 +7,15 @@ from .models import Comment, Video
 User = user_model()
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'email'
+        ]
+
+
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video

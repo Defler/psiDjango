@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic.base import View, HttpResponse
 from django_filters import AllValuesFilter, DateTimeFilter, NumberFilter, FilterSet
+from django.contrib.auth import get_user_model as user_model
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,22 +9,45 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework import generics
 from rest_framework.reverse import reverse
 
-from .serializers import CommentSerializer, VideoSerializer, VideoUsersSerializer, CommentVideosSerializer
+from .serializers import UserSerializer, CommentSerializer, VideoSerializer, VideoUsersSerializer, \
+    CommentVideosSerializer
 from .models import Comment, Video
 
-
 # Create your views here.
+User = user_model()
+
 
 # TODO
 
 
 class Index(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
-        return Response({'videos': reverse(viewname='VideoListApiView', request=request),
-                         'comments': reverse(viewname='CommentListApiView', request=request),
-                        # 'users': reverse(UserList.name, request=request)
-                        # 'video-categories': reverse(UserList.name, request=request)
+        return Response({'users': reverse(viewname='UserApiView', request=request),
+                         'videosList': reverse(viewname='VideoListApiView', request=request),
+                         'videosUsers': reverse(viewname='VideoUsersApiView', request=request),
+                         'commentsList': reverse(viewname='CommentListApiView', request=request),
+                         'commentsVideos': reverse(viewname='CommentVideosApiView', request=request),
+                         # 'users': reverse(UserList.name, request=request)
+                         # 'video-categories': reverse(UserList.name, request=request)
                          })
+
+
+class UserApiView(APIView):
+    permission_classes = (IsAdminUser,)
+    name = "Users"
+
+    def get(self, request, *args, **kwargs):
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
 
 
 class CommentApiView(APIView):
@@ -47,6 +71,7 @@ class CommentApiView(APIView):
 
 class CommentListApiView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
+    name = "CommentList"
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     filterset_fields = ['user']
