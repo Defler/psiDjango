@@ -1,17 +1,38 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Comment, Video
+from .models import Comment, Video, VideoCategory
 
 # TODO
 
 
+class UserVideoSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Video
+        fields = ['url', 'title']
+
+
+class VideoCategoryVideoSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Video
+        fields = ['url', 'title']
+
+
+class VideoCategorySerializer(serializers.HyperlinkedModelSerializer):
+    videos = VideoCategoryVideoSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = VideoCategory
+        fields = ['pk', 'url', 'name', 'videos']
+
+
 class VideoSerializer(serializers.HyperlinkedModelSerializer):
+    video_category = serializers.SlugRelatedField(queryset=VideoCategory.objects.all(), slug_field='name')
     comments = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='comment-detail')
     user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Video
-        fields = ['url', 'title', 'description', 'datetime', 'user', 'comments']
+        fields = ['title', 'url', 'video_category', 'description', 'datetime', 'user', 'comments']
 
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
@@ -23,15 +44,10 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'comValue', 'datetime', 'user', 'video']
 
 
-class UserCommentSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ['url', 'comValue']
-
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    comments = UserCommentSerializer(many=True, read_only=True)
+    videos = UserVideoSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ['url', 'pk', 'username', 'comments']
+        fields = ['url', 'pk', 'username', 'videos']

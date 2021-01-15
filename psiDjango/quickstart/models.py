@@ -6,7 +6,18 @@ from django.contrib.auth import get_user_model
 
 # TODO
 
+class VideoCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+
 class Video(models.Model):
+    video_category = models.ForeignKey(VideoCategory, related_name='videos', on_delete=models.CASCADE)
     title = models.CharField(max_length=25)
     description = models.TextField(max_length=300)
     datetime = models.DateTimeField(blank=False, null=False)
