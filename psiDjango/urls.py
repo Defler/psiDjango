@@ -17,19 +17,20 @@ from django.contrib import admin
 from django.urls import path, include
 # from psiDjango.quickstart import views
 from psiDjango.quickstart import views
-from psiDjango.quickstart.views import Index, UserApiView, CommentApiView, CommentVideosView, CommentListApiView, CommentUpdateApiView, VideoApiView, VideoUsersView, VideoListApiView, VideoUpdateApiView
+from psiDjango.quickstart.views import Index, CommentList, CommentDetail, \
+    VideoList, VideoDetail, UserList, UserDetail
 
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
     path('', Index.as_view(), name='IndexApiView'),
-    path('users', UserApiView.as_view(), name='UserApiView'),
-    path('comments', CommentApiView.as_view(), name='CommentApiView'),
-    path('commentsVideos', CommentVideosView.as_view(), name='CommentVideosApiView'),
-    path('commentsList', CommentListApiView.as_view(), name='CommentListApiView'),
-    path('comments/<int:pk>', CommentUpdateApiView.as_view(), name='CommentUpdateApiView'),
-    path('videos', VideoApiView.as_view(), name='VideoApiView'),
-    path('videosUsers', VideoUsersView.as_view(), name='VideoUsersApiView'),
-    path('videosList', VideoListApiView.as_view(), name='VideoListApiView'),
-    path('videos/<int:pk>', VideoUpdateApiView.as_view(), name='VideoUpdateApiView'),
+
+    path('comments', CommentList.as_view(), name=views.CommentList.name),
+    path('comments/<int:pk>', CommentDetail.as_view(), name=views.CommentDetail.name),
+
+    path('videos', VideoList.as_view(), name=views.VideoList.name),
+    path('videos/<int:pk>', VideoDetail.as_view(), name=views.VideoDetail.name),
+
+    path('users', UserList.as_view(), name=views.UserList.name),
+    path('users/<int:pk>', UserDetail.as_view(), name=views.UserDetail.name)
 ]
