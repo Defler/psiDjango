@@ -19,7 +19,7 @@ class VideoCategory(models.Model):
 class Video(models.Model):
     video_category = models.ForeignKey(VideoCategory, related_name='videos', on_delete=models.CASCADE)
     title = models.CharField(max_length=25)
-    description = models.TextField(max_length=300)
+    description = models.TextField(max_length=300, blank=True, null=True)
     datetime = models.DateTimeField(blank=False, null=False)
     user = models.ForeignKey('auth.User', related_name='videos', on_delete=models.CASCADE)
 
