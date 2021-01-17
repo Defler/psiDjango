@@ -26,6 +26,26 @@ class Index(generics.GenericAPIView):
                          })
 
 
+class VideoFilter(FilterSet):
+    min_id = NumberFilter(field_name='id', lookup_expr='gte')
+    max_id = NumberFilter(field_name='id', lookup_expr='lte')
+    title = AllValuesFilter(field_name='title')
+
+    class Meta:
+        model = Video
+        fields = ['min_id', 'max_id', 'title']
+
+
+class CommentFilter(FilterSet):
+    min_date = DateTimeFilter(field_name='datetime', lookup_expr='gte')
+    max_date = DateTimeFilter(field_name='datetime', lookup_expr='lte')
+    comValue = AllValuesFilter(field_name='comValue')
+
+    class Meta:
+        model = Comment
+        fields = ['min_date', 'max_date', 'comValue']
+
+
 class VideoCategoryList(generics.ListCreateAPIView):
     queryset = VideoCategory.objects.all()
     serializer_class = VideoCategorySerializer
@@ -50,6 +70,8 @@ class CommentList(generics.ListCreateAPIView):
     search_fields = ['comValue']
     ordering_fields = ['datetime']
 
+    filter_class = CommentFilter
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -59,16 +81,6 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
     name = 'comment-detail'
     permission_classes = (IsAuthenticatedOrReadOnly,)
-
-
-class VideoFilter(FilterSet):
-    min_id = NumberFilter(field_name='id', lookup_expr='gte')
-    max_id = NumberFilter(field_name='id', lookup_expr='lte')
-    title = AllValuesFilter(field_name='title')
-
-    class Meta:
-        model = Video
-        fields = ['min_id', 'max_id', 'title']
 
 
 class VideoList(generics.ListCreateAPIView):
