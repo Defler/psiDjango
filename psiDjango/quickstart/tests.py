@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
-
 #from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework import serializers
-
+from django import urls
+from django.utils.http import urlencode
 from . import views
 from .models import VideoCategory, Comment, Video
 from .serializers import CommentSerializer
@@ -34,36 +34,35 @@ class VideoCategoryTests(APITestCase):
         assert VideoCategory.objects.count() == 1
         assert VideoCategory.objects.get().name == new_name
 
+    def test_update_video_category(self):
+        video_category_name = 'porn'
+        response = self.post_video_category(video_category_name)
+        url = urls.reverse(views.VideoCategoryDetail.name, None, {response.data['pk']})
+        updated_video_category_name = 'New porn'
+        data = {'name': updated_video_category_name}
+        patch_response = self.client.patch(url, data, format='json')
+        assert patch_response.status_code == status.HTTP_200_OK
+        assert patch_response.data['name'] == updated_video_category_name
+
+    def test_get_video_category(self):
+        video_category_name = 'porn'
+        response = self.post_video_category(video_category_name)
+        url = urls.reverse(views.VideoCategoryDetail.name, None, {response.data['pk']})
+        get_response = self.client.patch(url, format='json')
+        assert get_response.status_code == status.HTTP_200_OK
+        assert get_response.data['name'] == video_category_name
+
+    def test_filter_video_category_by_name(self):
+        video_category_name_one = 'horror'
+        video_category_name_two = 'porn'
+        self.post_video_category(video_category_name_one)
+        self.post_video_category(video_category_name_two)
+        filter_by_name = {'name': video_category_name_one}
+        url = '{0}?{1}'.format(reverse(views.VideoCategoryList.name), urlencode(filter_by_name))
+        print(url)
+        response = self.client.get(url, format='json')
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data['count'] == 1
+        assert response.data['results'][0]['name'] == video_category_name_one
 
 
-# class CommentTest(APITestCase):
-#     def setUp(self):
-#         # Create some users
-#         self.user_1 = User.objects.create_user(username='admin', password='pwdpwd', email='admin@mail.com')
-#         self.vidcat_1 = VideoCategory.objects.create(name="TestCat")
-#         self.video_1 = Video.objects.create(video_category=self.vidcat_1, title='test', description='desc', datetime='2021-02-05T00:06:00Z', user=self.user_1)
-#
-#     def post_comment(self, comValue, dateTime):
-#         video = self.video_1
-#         video = CommentSerializer(instance=video)
-#         print(video)
-#         url = reverse(views.CommentList.name)
-#         data = list({
-#             'comValue': comValue,
-#             'datetime': dateTime,
-#             'video': video
-#         })
-#         response = self.client.post(url, json.dumps(data), format='json')
-#         return response
-#
-#     def test_post_and_get_comment(self):
-#         self.client.login(username='admin', password='pwdpwd')
-#         new_comValue = 'NewComValue'
-#         new_dateTime = '2021-02-05T00:06:00Z'
-#         response = self.post_comment(new_comValue, new_dateTime)
-#         print(response.status_code)
-#         print(response)
-#         print(response.json())
-#         assert response.status_code == status.HTTP_201_CREATED
-#         assert VideoCategory.objects.count() == 1
-#         assert VideoCategory.objects.get().name == new_comValue

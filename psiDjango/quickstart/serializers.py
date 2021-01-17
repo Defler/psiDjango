@@ -44,7 +44,6 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'comValue', 'datetime', 'user', 'video']
 
 
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     videos = UserVideoSerializer(many=True, read_only=True)
 
